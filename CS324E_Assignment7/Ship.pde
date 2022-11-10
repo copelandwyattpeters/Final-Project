@@ -16,6 +16,12 @@ class Ship{
     fill(#FFFFFF);
     rectMode(CENTER);
     rect(x,y, 100, 30);
+    rect(x-35,y-30, 30, 30);
+    rect(x+35,y-30, 30, 30);
+    triangle(x-20,y-15,x+20,y-15,x,y-50);
+    fill(#F70F0F);
+    triangle(x-20,y-45,x-50,y-45,x-35,y-75);
+    triangle(x+20,y-45,x+50,y-45,x+35,y-75);
     popMatrix();
   }
   
