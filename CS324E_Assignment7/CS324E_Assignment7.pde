@@ -17,9 +17,10 @@ Ship ship1;
 boolean allDead = false;
 boolean gameRunning = true;
 boolean win = false;
+int score = 0;
 
 void setup(){
-  size(750,750);
+  size(750,650);
   background(#000000);
   ship1 = new Ship(width,(height*2 -50), 50);
   //int blue = 50;
@@ -71,9 +72,12 @@ void draw(){
   background(#000000);
   fill(#FFFFFF);
   textSize(25);
-  text("Lives: ", 600,700);
+  text("Lives: ", 600,600);
   String string = str(ship1.lives);
-  text(string, 675,700);
+  text(string, 675,600);
+  text("Score: ", 600,550);
+  String stringScore = str(score);
+  text(stringScore, 675,550);
   ship1.display();
    if (t3.paused == false){
     if (t3.hasElapsed() == true){
@@ -149,6 +153,7 @@ void draw(){
           if (overEnemy(p, spaceInvaders[i]) == true){
             spaceInvaders[i].isAlive = false;
             projectilesShip.remove(j);
+            score +=1;
       }
       }
     }
@@ -213,8 +218,8 @@ void draw(){
     if (win == false){
       background(#000000);
       textSize(50);
-      text("YOU", 200,200);
-      text("LOSE", 200,400);
+      text("GAME", 200,200);
+      text("OVER", 200,400);
       text("Press 'r' to restart", 200,600);
     }
     
@@ -223,10 +228,14 @@ void draw(){
 
 void keyPressed(){
    if (key == 'd'){
+     if (ship1.x < width*2){
       ship1.moveRight();
-      }
+     }
+   }
    if (key == 'a'){
+     if (ship1.x > 0){
       ship1.moveLeft();
+     }
     }
    if (key == 'w'){
       ProjectileShip newProjectileShip = 
@@ -304,6 +313,7 @@ void restart(){
   allDead = false;
   gameRunning = true;
   win = false;
+  score = 0;
   
   background(#000000);
   ship1 = new Ship(width,(height*2 -50), 50);
