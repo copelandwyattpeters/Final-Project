@@ -15,15 +15,20 @@ ArrayList <Projectile> projectiles = new ArrayList <Projectile>();
 ArrayList <ProjectileShip> projectilesShip = new ArrayList <ProjectileShip>();
 Ship ship1;
 boolean allDead = false;
-boolean gameRunning = true;
+boolean gameRunning = false;
 boolean win = false;
+boolean start = true;
 int score = 0;
 int counter = 0;
+Star[] stars = new Star[800];
+PFont font, font2;
 
 void setup(){
   size(750,650);
   background(#000000);
   ship1 = new Ship(width,(height*2 -50), 50);
+  font = createFont("space_invaders.ttf", 20);
+  font2 = createFont("MachineStd-Bold.otf", 20);
   for (int i = 0; i < 4; i++){
     int green = int(random(0,255));
     int red = int(random(0,255));    
@@ -42,10 +47,18 @@ void setup(){
   t2 = new Timer(8000);
   t3 = new Timer(500);
   t4 = new Timer(1000);
+  
+   for (int i = 0; i < stars.length; i++) {
+    stars[i] = new Star();
+  }
 }
 
 
 void draw(){
+if (!gameRunning && start == true) {
+    startScreen();
+    return;
+  }
   if (gameRunning == true){
     if (t4.paused == false){
     if (t4.hasElapsed() == true){
@@ -67,13 +80,13 @@ void draw(){
   }
   background(#000000);
   fill(#FFFFFF);
-  textSize(25);
-  text("Lives: ", 600,600);
+  textFont(font);
+  text("Lives: ", 604,600);
   String string = str(ship1.lives);
-  text(string, 675,600);
+  text(string, 684,600);
   text("Score: ", 600,550);
   String stringScore = str(score);
-  text(stringScore, 675,550);
+  text(stringScore, 685,550);
   ship1.display();
    if (t3.paused == false){
     if (t3.hasElapsed() == true){
@@ -164,12 +177,8 @@ void draw(){
           }
   }
   if (ship1.lives == 0){
-    background(#000000);
-    textSize(50);
-    text("YOU", 200,200);
-    text("LOSE", 200,400);
-    text("RESTART?", 200,600);
-    gameRunning = false;
+  loseScreen();
+  gameRunning = false;
   }
   
   for (int i = 0; i < spaceInvaders.length; i++){
@@ -185,41 +194,21 @@ void draw(){
   }
   
   if (allDead == true){
-    background(#000000);
-    textSize(50);
-    fill(#FFFFFF);
-    text("YOU", 200,200);
-    text("WIN", 200,400);
-    text("RESTART?", 200,600);
-    gameRunning = false;
+    winScreen();
     win = true;
   }
     if (spaceInvaders[InvaderNumber-1].y >= height*2-50){
-    background(#000000);
-    textSize(50);
-    fill(#FFFFFF);
-    text("YOU", 200,200);
-    text("LOSE", 200,400);
-    text("RESTART?", 200,600);
+    loseScreen();
     gameRunning = false;
   }
   }
   
   if (gameRunning == false){
-    fill(#FFFFFF);
     if (win == true){
-    background(#000000);
-    textSize(50);
-    text("YOU", 200,200);
-    text("WIN", 200,400);
-    text("RESTART?", 200,600);
+    winScreen();
     }
     if (win == false){
-      background(#000000);
-      textSize(50);
-      text("GAME", 200,200);
-      text("OVER", 200,400);
-      text("Press 'r' to restart", 200,600);
+      loseScreen();
     }
     
   }
@@ -246,6 +235,9 @@ void keyPressed(){
          gameRunning = true;
         restart();
       }
+      if (key == 'e') {
+       exit();
+       }
    }
 }
 
@@ -335,4 +327,74 @@ void restart(){
   t2.timeElapsed = millis();
   t3.timeElapsed = millis();
   t4.timeElapsed = millis();
+}
+void startScreen() {
+  background(0);
+  starSpeed = 1;
+  pushMatrix();
+  translate(width/2, height/2);
+  for (int i = 0; i < stars.length; i++) {
+    stars[i].update();
+    stars[i].show();
+  }
+  popMatrix();
+  rectMode(CORNER);
+  fill(0);
+  rect(100,200,550,220);
+  
+  if (dist(mouseX, 0, width/2, 0) <= 275 && dist(0, mouseY, 0, height/2 + 65) <= 30) {
+    fill(30);
+    noStroke();
+    rectMode(CENTER);
+    rect(width/2, height / 2 + 65, 500, 60, 20);
+    
+    if (mousePressed) {
+      gameRunning = true;
+      start = false;
+    }
+  }
+  textFont(font2);
+  textSize(90);
+  textAlign(CENTER, CENTER);
+  fill(254, 162, 32);
+  text("Space Invaders", width / 2, height / 2 - 60);
+   fill(255, 234, 0);
+  text("Space Invaders", width / 2 - 3, height / 2 - 60);
+  textFont(font);
+  fill(35, 247, 32);
+  textSize(28);
+  text("Click Here to Start", width / 2, height / 2 + 60);
+
+}
+
+void loseScreen() {
+  background(0);
+  textFont(font2);
+  textSize(90);
+  fill(254, 162, 32);
+  textAlign(CENTER, CENTER);
+  text("GAME OVER", width / 2, height / 2 - 60);
+  fill(255, 234, 0);
+  text("GAME OVER", width / 2 - 3, height / 2 - 60);
+  textFont(font);
+  textSize(28);
+  fill(35, 247, 32);
+  text("Press 'r' to restart", width/2, height / 2 + 60);
+  text("Press 'e' to exit", width/2, height / 2 + 100);
+}
+
+void winScreen() {
+ background(0);
+  textFont(font2);
+  textSize(90);
+  fill(254, 162, 32);
+  textAlign(CENTER, CENTER);
+  text("YOU WIN", width / 2, height / 2 - 60);
+  fill(255, 234, 0);
+  text("YOU WIN", width / 2 - 3, height / 2 - 60);
+  textFont(font);
+  textSize(28);
+  fill(35, 247, 32);
+  text("Press 'r' to restart", width/2, height / 2 + 60);
+  text("Press 'e' to exit", width/2, height / 2 + 100);
 }
