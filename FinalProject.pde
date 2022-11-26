@@ -21,6 +21,7 @@ boolean start = true;
 int score = 0;
 int counter = 0;
 Star[] stars = new Star[800];
+float starSpeed;
 PFont font, font2;
 
 void setup(){
