@@ -178,7 +178,7 @@ if (!gameRunning && start == true) {
           }
   }
   if (ship1.lives == 0){
-  loseScreen();
+  screen("lose");
   gameRunning = false;
   }
   
@@ -195,21 +195,24 @@ if (!gameRunning && start == true) {
   }
   
   if (allDead == true){
-    winScreen();
+    screen("win");
+    gameRunning = false;
     win = true;
   }
     if (spaceInvaders[InvaderNumber-1].y >= height*2-50){
-    loseScreen();
-    gameRunning = false;
+      screen("lose");
+      gameRunning = false;
   }
   }
   
   if (gameRunning == false){
     if (win == true){
-    winScreen();
+      screen("win");
+      gameRunning = false;
     }
     if (win == false){
-      loseScreen();
+      screen("lose");
+      gameRunning = false;
     }
     
   }
@@ -368,31 +371,22 @@ void startScreen() {
 
 }
 
-void loseScreen() {
+void screen(String outcome) {
   background(0);
   textFont(font2);
   textSize(90);
   fill(254, 162, 32);
   textAlign(CENTER, CENTER);
-  text("GAME OVER", width / 2, height / 2 - 60);
+  String txt = "";
+  if (outcome == "lose") {
+    txt = "YOU LOSE";
+  }
+  if (outcome == "win") {
+    txt = "YOU WIN";
+  }
+  text(txt, width / 2, height / 2 - 60);
   fill(255, 234, 0);
-  text("GAME OVER", width / 2 - 3, height / 2 - 60);
-  textFont(font);
-  textSize(28);
-  fill(35, 247, 32);
-  text("Press 'r' to restart", width/2, height / 2 + 60);
-  text("Press 'e' to exit", width/2, height / 2 + 100);
-}
-
-void winScreen() {
- background(0);
-  textFont(font2);
-  textSize(90);
-  fill(254, 162, 32);
-  textAlign(CENTER, CENTER);
-  text("YOU WIN", width / 2, height / 2 - 60);
-  fill(255, 234, 0);
-  text("YOU WIN", width / 2 - 3, height / 2 - 60);
+  text(txt, width / 2 - 3, height / 2 - 60);
   textFont(font);
   textSize(28);
   fill(35, 247, 32);
