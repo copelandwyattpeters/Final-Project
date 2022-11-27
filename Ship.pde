@@ -38,7 +38,7 @@ class Ship{
     noStroke();
     pushMatrix();
     scale(.5);
-    fill(#FFFFFF);
+    fill(#FF3636);
     rectMode(CENTER);
     rect(x,y, 100, 10);
     rect(x,y-35, 30, 100);
