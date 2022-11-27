@@ -333,6 +333,13 @@ void keyPressed(){
        exit();
        }
    }
+   if (key == 'm') {
+       if (menu_file.isPlaying()) {
+    menu_file.pause();
+  } else {
+    menu_file.play();
+  }
+   }
 }
 
 // Determine if the ship projectile is over the enemy invader
