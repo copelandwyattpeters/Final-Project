@@ -59,16 +59,26 @@ PFont font, font2;
 // 0 = Easy, 1 = Medium, 2 = Hard
 int difficulty = 0;
 
+import processing.sound.*;
+SoundFile menu_file, ping_file, life_file;
+
 
 // SETUP
 void setup(){
   size(750,650);
+  menu_file = new SoundFile(this,"background1.wav");
+  menu_file.play();
+  menu_file.amp(1);
+  menu_file.loop();
   background(#000000);
   font = createFont("space_invaders.ttf", 20);
   font2 = createFont("MachineStd-Bold.otf", 20);
    for (int i = 0; i < stars.length; i++) {
     stars[i] = new Star();
   }
+  ping_file = new SoundFile(this,"ping.mp3");
+  life_file = new SoundFile(this,"ship_life.wav");
+
 }
 
 //DRAW
@@ -214,6 +224,8 @@ void draw(){
             ship1.lives -=1;
             // Cause ship to turn red to demonstrate that it has been hit
             ship1.animate = true;
+            life_file.play();
+            life_file.amp(0.3);
             t5.timeElapsed = millis();
             
           }
@@ -306,6 +318,8 @@ void keyPressed(){
     }
    // Add new ship projectile anytime 'w' is pressed 
    if (key == 'w'){
+      ping_file.play();
+      ping_file.amp(0.1);
       ProjectileShip newProjectileShip = 
       new ProjectileShip(ship1.x, ship1.y, float(10));
       projectilesShip.add(newProjectileShip);
