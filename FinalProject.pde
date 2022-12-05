@@ -61,6 +61,7 @@ int difficulty = 0;
 
 import processing.sound.*;
 SoundFile menu_file, ping_file, life_file;
+boolean mute = false;
 
 
 // SETUP
@@ -224,8 +225,10 @@ void draw(){
             ship1.lives -=1;
             // Cause ship to turn red to demonstrate that it has been hit
             ship1.animate = true;
+            if (mute == false) {
             life_file.play();
-            life_file.amp(0.3);
+            life_file.amp(0.5);
+            }
             t5.timeElapsed = millis();
             
           }
@@ -318,8 +321,10 @@ void keyPressed(){
     }
    // Add new ship projectile anytime 'w' is pressed 
    if (key == 'w'){
-      ping_file.play();
-      ping_file.amp(0.1);
+     if (mute == false) {
+       ping_file.play();
+       ping_file.amp(0.1);
+     }
       ProjectileShip newProjectileShip = 
       new ProjectileShip(ship1.x, ship1.y, float(10));
       projectilesShip.add(newProjectileShip);
@@ -334,10 +339,12 @@ void keyPressed(){
        }
    }
    if (key == 'm') {
-       if (menu_file.isPlaying()) {
+    mute = true;
+    if (menu_file.isPlaying()) {
     menu_file.pause();
   } else {
     menu_file.play();
+    mute = false;
   }
    }
 }
