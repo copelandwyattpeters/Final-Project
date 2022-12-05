@@ -176,7 +176,9 @@ void draw(){
         spaceInvaders[i].moveHorizontal();
       }
       t.timeElapsed = millis();
-      timeBonus -= 10;
+      if (timeBonus > 0) {
+        timeBonus -= 10;
+      }
     }
   }
   
