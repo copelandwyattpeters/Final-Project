@@ -58,6 +58,8 @@ float starSpeed;
 PFont font, font2;
 // 0 = Easy, 1 = Medium, 2 = Hard
 int difficulty = 0;
+//JSON array to keep track of high scores
+JSONArray jsonScores;
 
 import processing.sound.*;
 SoundFile menu_file, ping_file, life_file;
@@ -74,11 +76,12 @@ void setup(){
   background(#000000);
   font = createFont("space_invaders.ttf", 20);
   font2 = createFont("MachineStd-Bold.otf", 20);
-   for (int i = 0; i < stars.length; i++) {
+  for (int i = 0; i < stars.length; i++) {
     stars[i] = new Star();
   }
   ping_file = new SoundFile(this,"ping.mp3");
   life_file = new SoundFile(this,"ship_life.wav");
+  jsonScores = loadJSONArray("scores.json");
 
 }
 
@@ -268,6 +271,12 @@ void draw(){
     screen("win");
     gameRunning = false;
     win = true;
+    JSONObject jsonScore = new JSONObject();
+    jsonScore.setInt("score", score + timeBonus);
+    jsonScore.setInt("difficulty", difficulty);
+    jsonScores.setJSONObject(jsonScores.size(), jsonScore);
+    print(jsonScores);
+    saveJSONArray(jsonScores, "scores.json");
   }
   //  Player loses if invaders go too far in y direction
     if (spaceInvaders[InvaderNumber-1].y >= height*2-50){
@@ -800,6 +809,35 @@ void highScoreScreen(){
   textSize(30);
   fill(35, 247, 32);
   text("high scores ", width/2, 100);
+  text("easy", width/2, 150);
+  JSONArray json = loadJSONArray("scores.json");
+  print(json);
+  int easy_score = 0;
+  int med_score = 0;
+  int hard_score = 0;
+  // checking the highest scores based on loaded scores json array
+  for (int i = 0; i < json.size(); i++){
+    JSONObject j = json.getJSONObject(i);
+    int difficulty_lvl = j.getInt("difficulty");
+    if (difficulty_lvl == 0){
+      if (j.getInt("score") > easy_score){
+        easy_score = j.getInt("score");
+      }
+    } else if(difficulty_lvl == 1){
+      if (j.getInt("score") > med_score){
+        med_score = j.getInt("score");
+      }
+    } else {
+      if (j.getInt("score") > hard_score){
+        hard_score = j.getInt("score");
+      }
+    }
+  }
+  text(str(easy_score),width/2, 200);
+  text("medium", width/2, 300);
+  text(str(med_score), width/2, 350);
+  text("hard", width/2, 450);
+  text(str(hard_score),width/2, 500);
   textSize(20);
   text("back home", 100, height - 35);
 }
