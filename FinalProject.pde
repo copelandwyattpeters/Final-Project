@@ -346,8 +346,12 @@ void keyPressed(){
    // Add new ship projectile anytime 'w' is pressed 
    if (key == 'w'){
      if (t6.hasElapsed() == true){
-      ping_file.play();
-      ping_file.amp(0.1);
+       if (mute == false) {
+       ping_file.play();
+       ping_file.amp(0.1);
+     }
+     // ping_file.play();
+      //ping_file.amp(0.1);
       ProjectileShip newProjectileShip = 
       new ProjectileShip(ship1.x, ship1.y, float(10));
       projectilesShip.add(newProjectileShip);
@@ -365,11 +369,13 @@ void keyPressed(){
        }
    }
    if (key == 'm') {
-       if (menu_file.isPlaying()) {
+      mute = true;
+    if (menu_file.isPlaying()) {
     menu_file.pause();
   } else {
     menu_file.play();
-  }
+    mute = false;
+   }
    }
    
    if (key == 'x') {
@@ -788,6 +794,7 @@ void instructionScreen(){
   text("press 'a' to move ship left ", width/2, 140);
   text("press 'd' to move ship right ", width/2, 170);
   text("press 'w' to fire projectile ", width/2, 200);
+  text("press 'x' to exit game and return to main menu ", width/2, 250);
   textSize(30);
   text("easy difficulty:", width/2, 300);
   textSize(20);
