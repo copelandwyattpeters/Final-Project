@@ -1,0 +1,48 @@
+For our final project, we extended our Project 7 
+Space Invaders Game to include additional functionality such as 
+saving high scores, difficulty settings, sound, and an additional GUIs
+such as a main menu screen, a high score screen and an instruction screen, all
+of which have 1-3 buttons on them. High scores were in part determined by using a time bonus 
+based on how long the game has run and are categorized on the High 
+Score page in Easy, Medium, Hard. Classes included an Enemy class, Projectiles,
+Ship, ShipProjectile, Star and Timer. 
+
+Parts:
+Anakaren: Worked on ship to make movement limited to edges of the screen.
+Added a json file in order to manage the user data, 
+collecting highscores. The highscores were saved with a 
+saveJSONArray containing JSONObjects with the difficulty 
+and score integers saved. These were then accessed and the 
+highest score for each level was determined, with a 0 placeholder 
+if no winning game was found in the database.
+
+Wyatt: Made four new space invader designs in order to meet the 
+animation hierarchy requirement. The invaders move across the 
+screen and their legs move while doing it. The lower index rows 
+are worth more points when eliminated. The invaders in each row 
+have the same functionality but their colors change slightly with 
+each row. Additionally implemented difficulties which are as follows 
+in easy mode, there are only 20 invaders, the invaders are less 
+likely to fire projectiles, and they have the slowest movement, in 
+medium difficulty, there are 40 invaders, a cooldown exists for the 
+ship, and more projectiles are fired, and finally in hard mode there 
+are also 40 invaders, but they move much quicker, shoot more projectiles, 
+and there is only 1 life. Each difficulty is visually distinct by 
+the color of invaders as well.
+ 
+Kalei: Made the start screen GUI and Star class for it and ending screen, added an exit button, 
+updated scores/lives visual and added fonts/more colors to make game
+more visually appealing. Added a mute button, and added background music,
+projectile sound, and ship life sound. Sound was taken from freesound.org and fonts taken from dafontfree.co
+
+Ben: Worked on the spaceship that shoots projectiles. 
+This class is very similar to the enemies class, except the spaceship 
+has a life counter and has a different display and move pattern. 
+The movement is controlled by keystrokes input by the player using 
+the “a” and “d” keys. The ship fires a projectile using the “w” key.
+Furthermore, the ship has a display made up of rectangles and 
+triangles to make it more visually appealing. Anytime “w” is hit, 
+a projectile object is made and a timer is used to display its 
+animation pattern. For the final project, he updated the ship 
+design/make it more pixelated. Made the ship change color or have a 
+“signal” that it has been hit.
