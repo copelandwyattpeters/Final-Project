@@ -58,12 +58,12 @@ float starSpeed;
 PFont font, font2;
 // 0 = Easy, 1 = Medium, 2 = Hard
 int difficulty = 0;
-//JSON array to keep track of high scores
-JSONArray jsonScores;
 
 import processing.sound.*;
 SoundFile menu_file, ping_file, life_file;
 boolean mute = false;
+float projectilePossibility;
+JSONArray jsonScores;
 
 
 // SETUP
@@ -76,7 +76,7 @@ void setup(){
   background(#000000);
   font = createFont("space_invaders.ttf", 20);
   font2 = createFont("MachineStd-Bold.otf", 20);
-  for (int i = 0; i < stars.length; i++) {
+   for (int i = 0; i < stars.length; i++) {
     stars[i] = new Star();
   }
   ping_file = new SoundFile(this,"ping.mp3");
@@ -141,7 +141,7 @@ void draw(){
     if (spaceInvaders[i].isAlive == true){
       spaceInvaders[i].display();
       // Determine if the invader will produce a projectile based on random number
-      if (spaceInvaders[i].randomNum >= (5000 - counter)){
+      if (spaceInvaders[i].randomNum >= (projectilePossibility - counter)){
         Projectile newProjectile = 
         new Projectile(spaceInvaders[i].x, spaceInvaders[i].y, 10, cols);
         projectiles.add(newProjectile);
@@ -246,8 +246,14 @@ void draw(){
   
   // Set screen to loss screen if the player loses all lives
   if (ship1.lives == 0){
-  screen("lose");
-  gameRunning = false;
+    JSONObject jsonScore = new JSONObject();
+    jsonScore.setInt("score", score + timeBonus);
+    jsonScore.setInt("difficulty", difficulty);
+    jsonScores.setJSONObject(jsonScores.size(), jsonScore);
+    print(jsonScores);
+    saveJSONArray(jsonScores, "scores.json");
+    screen("lose");
+    gameRunning = false;
   }
   
   // Increase death count of invaders by looping though and seeing which are dead
@@ -280,6 +286,12 @@ void draw(){
   }
   //  Player loses if invaders go too far in y direction
     if (spaceInvaders[InvaderNumber-1].y >= height*2-50){
+      JSONObject jsonScore = new JSONObject();
+      jsonScore.setInt("score", score + timeBonus);
+      jsonScore.setInt("difficulty", difficulty);
+      jsonScores.setJSONObject(jsonScores.size(), jsonScore);
+      print(jsonScores);
+      saveJSONArray(jsonScores, "scores.json");
       screen("lose");
       gameRunning = false;
     }
@@ -320,6 +332,7 @@ void draw(){
 }
 
 void keyPressed(){
+  if (gameRunning == true){
    if (key == 'd'){
      if (ship1.x < width*2){
       ship1.moveRight();
@@ -332,14 +345,16 @@ void keyPressed(){
     }
    // Add new ship projectile anytime 'w' is pressed 
    if (key == 'w'){
-     if (mute == false) {
-       ping_file.play();
-       ping_file.amp(0.1);
-     }
+     if (t6.hasElapsed() == true){
+      ping_file.play();
+      ping_file.amp(0.1);
       ProjectileShip newProjectileShip = 
       new ProjectileShip(ship1.x, ship1.y, float(10));
       projectilesShip.add(newProjectileShip);
-    } 
+      t6.timeElapsed = millis();
+     }
+    }
+  }
    if (gameRunning == false){ 
      if (key == 'r'){
         start = true;
@@ -350,13 +365,16 @@ void keyPressed(){
        }
    }
    if (key == 'm') {
-    mute = true;
-    if (menu_file.isPlaying()) {
+       if (menu_file.isPlaying()) {
     menu_file.pause();
   } else {
     menu_file.play();
-    mute = false;
   }
+   }
+   
+   if (key == 'x') {
+     gameRunning = false;
+     start = true;
    }
 }
 
@@ -429,6 +447,7 @@ void restart(){
   win = false;
   score = 0;
   counter = 0;
+  projectilePossibility = 4998;
   timeBonus = 1000;
   int green = 100;
   int red = 0;   
@@ -457,12 +476,14 @@ void restart(){
   t3 = new Timer(500);
   t4 = new Timer(1000);
   t5 = new Timer(100);
+  t6 = new Timer(200);
   
   t.timeElapsed = millis();
   t2.timeElapsed = millis();
   t3.timeElapsed = millis();
   t4.timeElapsed = millis();
   t5.timeElapsed = millis();
+  t6.timeElapsed = millis();
   
 }
 
@@ -485,6 +506,7 @@ void restartEasy(){
   win = false;
   score = 0;
   counter = 0;
+  projectilePossibility = 5000;
   timeBonus = 1000;
   int red = 100;
   int green = 255;
@@ -514,12 +536,14 @@ void restartEasy(){
   t3 = new Timer(500);
   t4 = new Timer(1000);
   t5 = new Timer(100);
+  t6 = new Timer(0);
   
   t.timeElapsed = millis();
   t2.timeElapsed = millis();
   t3.timeElapsed = millis();
   t4.timeElapsed = millis();
   t5.timeElapsed = millis();
+  t6.timeElapsed = millis();
 }
 
 // Restart the settings of the game for hard difficulty
@@ -530,7 +554,7 @@ void restartHard(){
   speed = 75;
   count = 0;
   deathCount = 0;
-  InvaderNumber = 60;
+  InvaderNumber = 40;
   cols = color(#FF69B4);
   type = 4;
   spaceInvaders = new Invaders[InvaderNumber];
@@ -541,6 +565,7 @@ void restartHard(){
   win = false;
   score = 0;
   counter = 0;
+  projectilePossibility = 4996;
   timeBonus = 1000;
   int red = 255;
   int green = 0;
@@ -549,7 +574,7 @@ void restartHard(){
   background(#000000);
   ship1 = new Ship(width,(height*2 -50), 50);
   ship1.lives = 1;
-  for (int i = 0; i < 6; i++){
+  for (int i = 0; i < 4; i++){
     green += 50;
     for (int j = 0; j < 10; j++){
       cols = color(red, green, blue);
@@ -562,9 +587,6 @@ void restartHard(){
     }
     y += 100;
     x = 150;
-    if (type == 1){
-      type = 2;
-    }
     type -= 1;
     
   }
@@ -573,12 +595,14 @@ void restartHard(){
   t3 = new Timer(500);
   t4 = new Timer(1000);
   t5 = new Timer(100);
+  t6 = new Timer(300);
   
   t.timeElapsed = millis();
   t2.timeElapsed = millis();
   t3.timeElapsed = millis();
   t4.timeElapsed = millis();
   t5.timeElapsed = millis();
+  t6.timeElapsed = millis();
 }
 
 // Display the starting screen for the game
@@ -703,7 +727,7 @@ void screen(String outcome) {
     textFont(font);
     textSize(28);
     fill(35, 247, 32);
-    String stringScore5 = "Final Score: " + "0";
+    String stringScore5 = "Final Score: " + score;
     text(stringScore5, width/2, height / 2 + 60);
     text("Press 'r' to restart", width/2, height / 2 + 100);
     text("Press 'e' to exit", width/2, height / 2 + 140);
@@ -775,7 +799,7 @@ void instructionScreen(){
   textSize(30);
   text("hard difficulty:", width/2, 500);
   textSize(20);
-  text("60 enemies, fast speed, longer cooldown", width/2, 540);
+  text("40 enemies, fast speed, longer cooldown", width/2, 540);
   text("back home", 100, height - 35);
 }
 
